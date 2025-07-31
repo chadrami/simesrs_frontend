@@ -1,5 +1,5 @@
 # simesrs_frontend
-Plateforme des Étudiantes de l'Enseignement Supérieur, développée pour le Ministère de l'Enseignement Supérieur et de la Recherche. Scientifique.
+Plateforme des Étudiantes de l'Enseignement Supérieur, développée pour le Ministère de l'Enseignement Supérieur et de la Recherche Scientifique.
 
 ## Fonctionnalités principales
 
