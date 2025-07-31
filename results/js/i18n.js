@@ -18,11 +18,15 @@ export const translations = {
     rank: "Rang",
     name: "Nom et Prénom",
     average: "Moyenne",
-    ministryName: "Ministère de l'Enseignement Supérieur et de la Recherche Scientifique",
+    ministryName: "Ministère de l'Enseignement Supérieur<br>et de la Recherche Scientifique",
     copyright: "© 2025 MESRS - Tous droits réservés",
     arabicBtn: "العربية",
     frenchBtn: "Français",
-    errorLoadingData: "Une erreur est survenue lors du chargement des données"
+    errorLoadingData: "Une erreur est survenue lors du chargement des données",
+    loading: "Chargement...",
+    noResults: "Aucun résultat trouvé",
+    errorLoadingData: "Une erreur est survenue lors du chargement des données",
+    pleaseWait: "Veuillez patienter..."
   },
   ar: {
     title: "استشارة النتائج - وزارة التعليم العالي",
@@ -46,7 +50,11 @@ export const translations = {
     copyright: "© 2025 وزارة التعليم العالي - جميع الحقوق محفوظة",
     arabicBtn: "العربية",
     frenchBtn: "Français",
-    errorLoadingData: "حدث خطأ أثناء تحميل البيانات"
+    errorLoadingData: "حدث خطأ أثناء تحميل البيانات",
+    loading: "جاري التحميل...",
+    noResults: "لا توجد نتائج",
+    errorLoadingData: "حدث خطأ أثناء تحميل البيانات",
+    pleaseWait: "يرجى الانتظار..."
   }
 };
 
@@ -103,8 +111,8 @@ export function applyTranslations(lang) {
 
   // Footer
   const ministryName = document.querySelector('.ministry-name');
-  if (ministryName) ministryName.textContent = translation.ministryName;
-  
+  if (ministryName) ministryName.innerHTML = translation.ministryName;
+
   const copyright = document.querySelector('.copyright');
   if (copyright) copyright.textContent = translation.copyright;
   

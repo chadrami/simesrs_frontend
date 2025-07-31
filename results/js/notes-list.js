@@ -1,4 +1,3 @@
-// js/notes-list.js
 import { showAlert } from './utils.js';
 import { API_CONFIG, ROUTES } from './config.js';
 import { getPreferredLanguage, translations } from './i18n.js';
@@ -7,8 +6,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   const lang = getPreferredLanguage();
   const MESSAGES = translations[lang];
   
-  // Afficher immédiatement le message
+  // Afficher le message
   document.getElementById('dispute-notice-text').textContent = MESSAGES.disputeNotice;
+
+  // Fonction pour afficher le skeleton loader
+  const showSkeleton = () => {
+    const tbody = document.getElementById('etudiants-list');
+    tbody.innerHTML = '';
+    
+    for (let i = 0; i < 5; i++) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="text-center"><div class="skeleton skeleton-sm"></div></td>
+        <td><div class="skeleton"></div></td>
+        <td class="text-end"><div class="skeleton skeleton-sm"></div></td>
+      `;
+      tbody.appendChild(tr);
+    }
+  };
 
   try {
     const storedData = sessionStorage.getItem('consultationData');
@@ -17,48 +32,49 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
     
-    const { etablissement, formation, etablissementCode, formationCode, lang: storedLang } = JSON.parse(storedData);
-    
-    // Utiliser la langue stockée ou celle courante
-    const displayLang = storedLang || lang;
-    
+    const { etablissement, formation } = JSON.parse(storedData);
     document.getElementById('etablissement-nom').textContent = etablissement;
     document.getElementById('formation-nom').textContent = formation;
     
-    // Simuler un chargement
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Afficher le skeleton avant le chargement
+    showSkeleton();
     
-    // Ici, normalement tu ferais une requête API pour récupérer les étudiants
-    // Exemple fictif avec des données mockées
-    const etudiants = await loadStudents(formationCode, displayLang);
+    // Simuler un chargement (remplacer par un vrai appel API)
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
-    const tbody = document.getElementById('etudiants-list');
-    tbody.innerHTML = '';
-    
-    etudiants.forEach(etudiant => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td class="text-center fw-semibold">${etudiant.rang}</td>
-        <td>${etudiant.prenom} ${etudiant.nom}</td>
-        <td class="text-end fw-bold" style="color: var(--primary)">${etudiant.moyenne.toFixed(2)}</td>
-      `;
-      tbody.appendChild(tr);
-    });
+    const etudiants = generateMockStudents();
+    displayStudents(etudiants);
     
   } catch (err) {
-    showAlert(document.querySelector('.card-body'), 'danger', MESSAGES.errorLoadingData || 'Une erreur est survenue lors du chargement des données');
+    showAlert(document.querySelector('.card-body'), 'danger', MESSAGES.errorLoadingData);
   }
 });
 
-// Fonction fictive pour charger les étudiants - à remplacer par ton appel API réel
-async function loadStudents(formationCode, lang) {
-  // En réalité, tu ferais :
-  // const response = await fetch(`${API_CONFIG.BASE_URL}/formations/${formationCode}/etudiants`);
-  // const data = await response.json();
-  // return processStudentsData(data, lang);
+function displayStudents(etudiants) {
+  const tbody = document.getElementById('etudiants-list');
+  tbody.innerHTML = '';
   
-  // Pour l'exemple, on utilise des données mockées
-  return generateMockStudents();
+  if (etudiants.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="3" class="text-center py-4 text-muted">
+          ${MESSAGES.noResults}
+        </td>
+      </tr>
+    `;
+    return;
+  }
+  
+  etudiants.forEach(etudiant => {
+    const tr = document.createElement('tr');
+    tr.className = 'fade-in';
+    tr.innerHTML = `
+      <td class="text-center fw-semibold">${etudiant.rang}</td>
+      <td>${etudiant.prenom} ${etudiant.nom}</td>
+      <td class="text-end fw-bold text-primary">${etudiant.moyenne.toFixed(2)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
 
 function generateMockStudents() {
@@ -73,27 +89,13 @@ function generateMockStudents() {
     { prenom: "El Hacen", nom: "Mohamed El Moustapha", moyenne: 11.20 },
     { prenom: "Khadijetou", nom: "Sidi Ahmed", moyenne: 10.85 },
     { prenom: "Moussa", nom: "Alioune Sarr", moyenne: 10.50 }
+    // ... autres étudiants mockés
   ];
 
   return etudiants
     .sort((a, b) => b.moyenne - a.moyenne)
     .map((etudiant, index) => ({
       ...etudiant,
-      rang: index + 1
-    }));
-}
-
-// Fonction pour traiter les données des étudiants selon la langue
-function processStudentsData(data, lang) {
-  return data.results.map(student => ({
-    // Ici tu adapterais selon la structure de ton API
-    prenom: student[`first_name_${lang}`] || student.first_name_fr,
-    nom: student[`last_name_${lang}`] || student.last_name_fr,
-    moyenne: student.average,
-    // ... autres champs
-  })).sort((a, b) => b.moyenne - a.moyenne)
-    .map((student, index) => ({
-      ...student,
       rang: index + 1
     }));
 }
