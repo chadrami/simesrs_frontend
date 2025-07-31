@@ -18,10 +18,14 @@
         <img src="./assets/slogan_rim.png" height="60" class="ms-2" alt="Slogan">
       </div>
       <div class="mx-auto text-center">
-        <h1 class="fs-4 fw-bold mb-0" style="color: #1a3a2c">Plateforme des Étudiantes de l'Enseignement Supérieur</h1>
-        <p class="small mb-0" style="color: #1a3a2c">Année Universitaire 2025-2026</p>
+        <h1 class="fs-4 fw-bold mb-0 platform-title" style="color: #1a3a2c"></h1>
+        <p class="small mb-0 academic-year" style="color: #1a3a2c"></p>
       </div>
-      <div style="width: 180px"></div>
+      <div>
+        <button id="language-switcher" class="btn btn-sm btn-outline-secondary">
+          <i class="bi bi-translate"></i> <span></span>
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -44,20 +48,20 @@
                 <span id="dispute-notice-text"></span>
               </div>
               
-            <div class="table-responsive-lg">
-              <table class="table table-hover align-middle">
-                <thead class="table-light">
-                  <tr>
-                    <th class="text-center" style="width: 10%">Rang</th>
-                    <th style="width: 45%">Nom et Prénom</th>
-                    <th class="text-end" style="width: 15%">Moyenne</th>
-                  </tr>
-                </thead>
-                <tbody id="etudiants-list" class="border-top-0">
-                  <!-- Les étudiants seront chargés dynamiquement -->
-                </tbody>
-              </table>
-            </div>
+              <div class="table-responsive-lg">
+                <table class="table table-hover align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="text-center" style="width: 10%"></th>
+                      <th style="width: 45%"></th>
+                      <th class="text-end" style="width: 15%"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="etudiants-list" class="border-top-0">
+                    <!-- Les étudiants seront chargés dynamiquement -->
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -74,9 +78,7 @@
             <img src="./assets/logo_rim.png" height="50" alt="Logo MESRS" class="mx-auto">
           </div>
           <p class="small mb-0 text-center">
-            <span class="d-block fw-semibold">وزارة التعليم العالي والبحث العلمي</span>
-            <span class="d-block">Ministère de l'Enseignement Supérieur</span>
-            <span class="d-block">et de la Recherche Scientifique</span>
+            <span class="d-block ministry-name"></span>
           </p>
         </div>
         <div class="col-md-4 text-center mb-3 mb-md-0">
@@ -87,12 +89,26 @@
           </ul>
         </div>
         <div class="col-md-4 text-center text-md-end">
-          <p class="small text-muted mb-0">© 2025 MESRS - Tous droits réservés</p>
+          <p class="small text-muted mb-0 copyright"></p>
         </div>
       </div>
     </div>
   </footer>
 
+  <script type="module">
+    import { setLanguage, getPreferredLanguage, applyTranslations } from './js/i18n.js';
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      const lang = getPreferredLanguage();
+      applyTranslations(lang);
+      
+      document.getElementById('language-switcher').addEventListener('click', () => {
+        const newLang = lang === 'fr' ? 'ar' : 'fr';
+        setLanguage(newLang);
+        window.location.reload();
+      });
+    });
+  </script>
   <script src="./js/notes-list.js" type="module"></script>
 </body>
 </html>

@@ -17,10 +17,14 @@
         <img src="./assets/slogan_rim.png" height="60" class="ms-2" alt="Slogan">
       </div>
       <div class="mx-auto text-center">
-        <h1 class="fs-4 fw-bold mb-0" style="color: #1a3a2c">Plateforme des Étudiantes de l'Enseignement Supérieur</h1>
-        <p class="small mb-0" style="color: #1a3a2c">Année Universitaire 2025-2026</p>
+        <h1 class="fs-4 fw-bold mb-0 platform-title" style="color: #1a3a2c"></h1>
+        <p class="small mb-0 academic-year" style="color: #1a3a2c"></p>
       </div>
-      <div style="width: 180px"></div>
+      <div>
+        <button id="language-switcher" class="btn btn-sm btn-outline-secondary">
+          <i class="bi bi-translate"></i> <span></span>
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -31,27 +35,26 @@
         <div class="col-12 col-md-8 col-lg-6">
           <div class="card border-0 shadow mx-auto" style="max-width: 500px;">
             <div class="card-header bg-white border-bottom-0 pb-0">
-              <h2 class="h4 fw-bold text-center" style="color: #1a3a2c">Sélection de la Formation</h2>
+              <h2 class="h4 fw-bold text-center selection-title" style="color: #1a3a2c"></h2>
             </div>
             <div class="card-body pt-0">
               <form id="selection-form">
                 <div class="mb-3">
-                  <label for="input-etablissement" class="form-label">Établissement</label>
+                  <label for="input-etablissement" class="form-label"></label>
                   <select class="form-select" id="input-etablissement" required>
-                    <option value="" selected disabled>Choisissez votre établissement</option>
-                    <!-- Les options seront chargées dynamiquement -->
+                    <option value="" selected disabled></option>
                   </select>
                 </div>
                 
                 <div class="mb-3">
-                  <label for="input-formation" class="form-label">Formation</label>
+                  <label for="input-formation" class="form-label"></label>
                   <select class="form-select" id="input-formation" disabled required>
-                    <option value="" selected disabled>Choisissez d'abord un établissement</option>
+                    <option value="" selected disabled></option>
                   </select>
                 </div>
                 
                 <button type="submit" class="btn btn-primary w-100 py-2 fw-bold" id="submit-btn">
-                  <span id="button-text"><i class="bi bi-search me-2"></i>Consulter les notes</span>
+                  <span id="button-text"><i class="bi bi-search me-2"></i></span>
                 </button>
               </form>
               <div id="message" class="mt-3"></div>
@@ -71,9 +74,7 @@
             <img src="./assets/logo_rim.png" height="50" alt="Logo MESRS" class="mx-auto">
           </div>
           <p class="small mb-0 text-center">
-            <span class="d-block fw-semibold">وزارة التعليم العالي والبحث العلمي</span>
-            <span class="d-block">Ministère de l'Enseignement Supérieur</span>
-            <span class="d-block">et de la Recherche Scientifique</span>
+            <span class="d-block ministry-name"></span>
           </p>
         </div>
         <div class="col-md-4 text-center mb-3 mb-md-0">
@@ -84,12 +85,26 @@
           </ul>
         </div>
         <div class="col-md-4 text-center text-md-end">
-          <p class="small text-muted mb-0">© 2025 MESRS - Tous droits réservés</p>
+          <p class="small text-muted mb-0 copyright"></p>
         </div>
       </div>
     </div>
   </footer>
 
+  <script type="module">
+    import { setLanguage, getPreferredLanguage, applyTranslations } from './js/i18n.js';
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      const lang = getPreferredLanguage();
+      applyTranslations(lang);
+      
+      document.getElementById('language-switcher').addEventListener('click', () => {
+        const newLang = lang === 'fr' ? 'ar' : 'fr';
+        setLanguage(newLang);
+        window.location.reload();
+      });
+    });
+  </script>
   <script src="./js/notes.js" type="module"></script>
 </body>
 </html>

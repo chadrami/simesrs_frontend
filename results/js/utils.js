@@ -1,3 +1,4 @@
+// js/utils.js
 /**
  * Affiche une alerte stylisée
  * @param {HTMLElement} container - Élément conteneur
@@ -7,13 +8,23 @@
  */
 export function showAlert(container, type, message, icon = null) {
   const alert = document.createElement('div');
-  alert.className = `alert alert-${type}`;
+  alert.className = `alert alert-${type} alert-dismissible fade show`;
+  alert.role = 'alert';
   alert.innerHTML = `
     ${icon ? `<i class="bi bi-${icon} me-2"></i>` : ''}
     ${message}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   `;
-  container.innerHTML = '';
+  
+  // Vider le conteneur avant d'ajouter la nouvelle alerte
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+  
   container.appendChild(alert);
+  
+  // Retourner la référence pour pouvoir la fermer programmatiquement si besoin
+  return alert;
 }
 
 /**
@@ -35,10 +46,10 @@ export function decodeParam(param) {
 }
 
 /**
- * Formate une date en français
+ * Formate une date en français ou arabe
  */
-export function formatDate(dateString) {
-  if (!dateString) return 'Date inconnue';
+export function formatDate(dateString, lang = 'fr') {
+  if (!dateString) return lang === 'fr' ? 'Date inconnue' : 'تاريخ غير معروف';
   
   let date = new Date(dateString);
   
@@ -62,5 +73,5 @@ export function formatDate(dateString) {
     minute: '2-digit'
   };
   
-  return date.toLocaleDateString('fr-FR', options);
+  return date.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'ar-MA', options);
 }

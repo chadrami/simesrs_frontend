@@ -1,9 +1,14 @@
+// js/notes-list.js
 import { showAlert } from './utils.js';
-import { API_CONFIG, MESSAGES, ROUTES } from './config.js';
+import { API_CONFIG, ROUTES } from './config.js';
+import { getPreferredLanguage, translations } from './i18n.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+  const lang = getPreferredLanguage();
+  const MESSAGES = translations[lang];
+  
   // Afficher immédiatement le message
-  document.getElementById('dispute-notice-text').textContent = MESSAGES.DISPUTE_NOTICE;
+  document.getElementById('dispute-notice-text').textContent = MESSAGES.disputeNotice;
 
   try {
     const storedData = sessionStorage.getItem('consultationData');
@@ -12,20 +17,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
     
-    const { etablissement, formation } = JSON.parse(storedData);
+    const { etablissement, formation, etablissementCode, formationCode, lang: storedLang } = JSON.parse(storedData);
+    
+    // Utiliser la langue stockée ou celle courante
+    const displayLang = storedLang || lang;
+    
     document.getElementById('etablissement-nom').textContent = etablissement;
     document.getElementById('formation-nom').textContent = formation;
     
-    document.querySelector('.alert-info').innerHTML = `
-      <i class="bi bi-info-circle-fill me-2"></i>
-      ${MESSAGES.DISPUTE_NOTICE}
-    `;
-    
-    console.log('Chargement des étudiants...');
+    // Simuler un chargement
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    const etudiants = generateMockStudents();
-    console.log(`${etudiants.length} étudiants chargés`);
+    // Ici, normalement tu ferais une requête API pour récupérer les étudiants
+    // Exemple fictif avec des données mockées
+    const etudiants = await loadStudents(formationCode, displayLang);
     
     const tbody = document.getElementById('etudiants-list');
     tbody.innerHTML = '';
@@ -40,12 +45,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       tbody.appendChild(tr);
     });
     
-    console.log('Liste des étudiants affichée avec succès');
   } catch (err) {
-    console.error('Erreur:', err);
-    showAlert(document.querySelector('.card-body'), 'danger', 'Une erreur est survenue lors du chargement des données');
+    showAlert(document.querySelector('.card-body'), 'danger', MESSAGES.errorLoadingData || 'Une erreur est survenue lors du chargement des données');
   }
 });
+
+// Fonction fictive pour charger les étudiants - à remplacer par ton appel API réel
+async function loadStudents(formationCode, lang) {
+  // En réalité, tu ferais :
+  // const response = await fetch(`${API_CONFIG.BASE_URL}/formations/${formationCode}/etudiants`);
+  // const data = await response.json();
+  // return processStudentsData(data, lang);
+  
+  // Pour l'exemple, on utilise des données mockées
+  return generateMockStudents();
+}
 
 function generateMockStudents() {
   const etudiants = [
@@ -65,6 +79,21 @@ function generateMockStudents() {
     .sort((a, b) => b.moyenne - a.moyenne)
     .map((etudiant, index) => ({
       ...etudiant,
+      rang: index + 1
+    }));
+}
+
+// Fonction pour traiter les données des étudiants selon la langue
+function processStudentsData(data, lang) {
+  return data.results.map(student => ({
+    // Ici tu adapterais selon la structure de ton API
+    prenom: student[`first_name_${lang}`] || student.first_name_fr,
+    nom: student[`last_name_${lang}`] || student.last_name_fr,
+    moyenne: student.average,
+    // ... autres champs
+  })).sort((a, b) => b.moyenne - a.moyenne)
+    .map((student, index) => ({
+      ...student,
       rang: index + 1
     }));
 }

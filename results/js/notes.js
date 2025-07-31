@@ -1,8 +1,11 @@
+// js/notes.js
 import { showAlert } from './utils.js';
-import { API_CONFIG, MESSAGES, ROUTES } from './config.js';
+import { API_CONFIG, ROUTES } from './config.js';
+import { getPreferredLanguage, translations } from './i18n.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log('Initialisation de la page index.html');
+  const lang = getPreferredLanguage();
+  const MESSAGES = translations[lang];
   
   const form = document.getElementById('selection-form');
   const etablissementSelect = document.getElementById('input-etablissement');
@@ -10,9 +13,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const messageDiv = document.getElementById('message');
   const submitBtn = document.getElementById('submit-btn');
 
+  // Initialiser les placeholders
+  etablissementSelect.querySelector('option').textContent = MESSAGES.selectInstitution;
+  formationSelect.querySelector('option').textContent = MESSAGES.selectProgramFirst;
+
   // Charger les établissements
   try {
-    console.log('Chargement des établissements...');
     const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.INSTITUTIONS}`);
     
     if (!response.ok) {
@@ -20,42 +26,42 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     const data = await response.json();
-    console.log('Établissements reçus:', data.results.length);
     
     if (data.count === 0) {
-      throw new Error(MESSAGES.NO_INSTITUTIONS);
+      throw new Error(MESSAGES.noInstitutions);
     }
     
-    data.results.sort((a, b) => a.name_fr.localeCompare(b.name_fr));
+    // Trier par nom dans la langue sélectionnée
+    data.results.sort((a, b) => {
+      const nameA = a[`name_${lang}`] || a.name_fr;
+      const nameB = b[`name_${lang}`] || b.name_fr;
+      return nameA.localeCompare(nameB);
+    });
     
-    etablissementSelect.innerHTML = '<option value="" selected disabled>Choisissez votre établissement</option>';
+    etablissementSelect.innerHTML = `<option value="" selected disabled>${MESSAGES.selectInstitution}</option>`;
     data.results.forEach(etablissement => {
       const option = document.createElement('option');
       option.value = etablissement.code;
-      option.textContent = etablissement.name_fr;
+      // Utiliser le nom dans la langue sélectionnée, avec fallback sur le français
+      option.textContent = etablissement[`name_${lang}`] || etablissement.name_fr;
       etablissementSelect.appendChild(option);
     });
     
-    console.log('Établissements chargés avec succès');
   } catch (err) {
-    console.error('Erreur chargement établissements:', err);
     showAlert(messageDiv, 'danger', err.message);
   }
 
   // Lorsque l'établissement change
   etablissementSelect.addEventListener('change', async () => {
     const codeEtablissement = etablissementSelect.value;
-    console.log('Établissement sélectionné:', codeEtablissement);
     
     if (!codeEtablissement) return;
     
     formationSelect.disabled = true;
-    formationSelect.innerHTML = `<option value="" selected disabled>${MESSAGES.LOADING}</option>`;
+    formationSelect.innerHTML = `<option value="" selected disabled>${MESSAGES.loading}</option>`;
     
     try {
       const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.DEGREE_PROGRAMS}/${codeEtablissement}${API_CONFIG.ENDPOINTS.FIRST_CYCLE_PROGRAMS}`;
-      console.log('Chargement formations avec URL:', url);
-      
       const response = await fetch(url);
       
       if (!response.ok) {
@@ -63,26 +69,29 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       
       const data = await response.json();
-      console.log('Formations reçues:', data.results.length);
       
       if (data.count === 0) {
-        throw new Error(MESSAGES.NO_PROGRAMS);
+        throw new Error(MESSAGES.noPrograms);
       }
       
-      data.results.sort((a, b) => a.label_fr.localeCompare(b.label_fr));
+      // Trier par label dans la langue sélectionnée
+      data.results.sort((a, b) => {
+        const labelA = a[`label_${lang}`] || a.label_fr;
+        const labelB = b[`label_${lang}`] || b.label_fr;
+        return labelA.localeCompare(labelB);
+      });
       
-      formationSelect.innerHTML = '<option value="" selected disabled>Choisissez votre formation</option>';
+      formationSelect.innerHTML = `<option value="" selected disabled>${MESSAGES.selectProgramFirst}</option>`;
       data.results.forEach(formation => {
         const option = document.createElement('option');
         option.value = formation.code;
-        option.textContent = formation.label_fr;
+        // Utiliser le label dans la langue sélectionnée, avec fallback sur le français
+        option.textContent = formation[`label_${lang}`] || formation.label_fr;
         formationSelect.appendChild(option);
       });
       
       formationSelect.disabled = false;
-      console.log('Formations chargées avec succès');
     } catch (err) {
-      console.error('Erreur chargement formations:', err);
       formationSelect.innerHTML = `<option value="" selected disabled>${err.message}</option>`;
       showAlert(messageDiv, 'danger', err.message);
     }
@@ -91,28 +100,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Soumission du formulaire
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    console.log('Soumission du formulaire');
     
     if (!etablissementSelect.value || !formationSelect.value) {
-      console.warn('Validation échouée: établissement ou formation non sélectionné');
-      showAlert(messageDiv, 'danger', MESSAGES.SELECT_INSTITUTION);
+      showAlert(messageDiv, 'danger', MESSAGES.selectInstitutionFirst);
       return;
     }
     
-    const selectedEtablissement = etablissementSelect.options[etablissementSelect.selectedIndex].text;
-    const selectedFormation = formationSelect.options[formationSelect.selectedIndex].text;
+    const selectedEtablissementText = etablissementSelect.options[etablissementSelect.selectedIndex].text;
+    const selectedFormationText = formationSelect.options[formationSelect.selectedIndex].text;
     
     const consultationData = {
-      etablissement: selectedEtablissement,
+      etablissement: selectedEtablissementText,
       etablissementCode: etablissementSelect.value,
-      formation: selectedFormation,
-      formationCode: formationSelect.value
+      formation: selectedFormationText,
+      formationCode: formationSelect.value,
+      lang: lang // Sauvegarder la langue courante
     };
     
-    console.log('Données à sauvegarder:', consultationData);
     sessionStorage.setItem('consultationData', JSON.stringify(consultationData));
-    
-    console.log('Redirection vers:', ROUTES.NOTES);
     window.location.href = ROUTES.NOTES;
   });
 });

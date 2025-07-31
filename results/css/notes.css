@@ -1,178 +1,29 @@
-/* Styles spécifiques à la page de notes */
-/* ----------------------------------- */
-
-/* Configuration de la carte principale */
-.card {
-  border-radius: 0.5rem;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  width: 100%;
-}
-
-.card-header {
-  background-color: #f8f9fa;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  padding: 1.25rem 2rem;
-}
-
-.card-body {
-  padding: 2rem;
-}
-
-/* Styles du tableau */
+/* css/notes.css */
 .table {
-  font-size: 0.925rem;
-  margin-top: 1rem;
+  font-size: 0.95rem;
 }
 
 .table th {
-  background-color: #f8f9fa;
   font-weight: 600;
-  color: var(--dark);
-  vertical-align: middle;
-  padding: 1rem;
-  border-bottom-width: 1px;
-}
-
-.table td {
-  padding: 0.75rem 1rem;
-  vertical-align: middle;
-  border-top: 1px solid #f0f0f0;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  color: #495057;
+  background-color: #f8f9fa;
 }
 
 .table-hover tbody tr:hover {
-  background-color: rgba(0, 169, 92, 0.05);
+  background-color: rgba(26, 58, 44, 0.05);
 }
 
-/* Alerte d'information */
 .alert-info {
-  background-color: #e7f8ff;
-  border-color: #b6e7ff;
-  color: #0c5460;
-  border-left: 4px solid #17a2b8;
+  background-color: #f0f7ff;
+  border-color: #d0e3ff;
+  color: #084298;
 }
 
-/* Animation des lignes du tableau */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.table tbody tr {
-  animation: fadeIn 0.3s ease-out forwards;
-  opacity: 0;
-}
-
-.table tbody tr:nth-child(1) { animation-delay: 0.1s; }
-.table tbody tr:nth-child(2) { animation-delay: 0.2s; }
-.table tbody tr:nth-child(3) { animation-delay: 0.3s; }
-.table tbody tr:nth-child(4) { animation-delay: 0.4s; }
-.table tbody tr:nth-child(5) { animation-delay: 0.5s; }
-.table tbody tr:nth-child(n+6) { animation-delay: 0.6s; }
-
-/* Responsive Design */
-@media (max-width: 992px) {
-  .card-body {
-    padding: 1.5rem;
-  }
-  
-  .table th, .table td {
-    padding: 0.75rem 0.5rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .card-header {
-    padding: 1rem;
-  }
-  
-  .card-body {
-    padding: 1rem;
-  }
-  
-  .alert-info {
-    font-size: 0.875rem;
-    padding: 0.75rem;
-  }
-  
-  .table {
-    font-size: 0.85rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .table-responsive-lg {
-    border: 0;
-  }
-  
-  .table-responsive-lg table {
-    width: 100%;
-    display: block;
-  }
-  
-  .table-responsive-lg thead {
-    display: none;
-  }
-  
-  .table-responsive-lg tbody tr {
-    display: block;
-    margin-bottom: 1rem;
-    border: 1px solid #dee2e6;
-    border-radius: 0.25rem;
-  }
-  
-  .table-responsive-lg td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    border-top: none;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  
-  .table-responsive-lg td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    margin-right: 1rem;
-    color: var(--dark);
-  }
-  
-  .table-responsive-lg td:last-child {
-    border-bottom: 0;
-  }
-}
-
-
-/* Ajoutez ces styles pour améliorer l'affichage */
-.table td {
-  vertical-align: middle;
-}
-
-.table td:last-child {
-  font-family: 'Courier New', monospace;
-}
-
-/* Style pour le premier de la classe */
-.table tbody tr:first-child td {
-  background-color: rgba(0, 169, 92, 0.05);
-}
-
-.table tbody tr:first-child td:last-child {
-  font-weight: 800;
-  font-size: 1.05em;
-}
-
-/* Style responsive pour mobile */
-@media (max-width: 576px) {
-  .table-responsive-lg td:nth-child(1)::before {
-    content: "Rang";
-  }
-  
-  .table-responsive-lg td:nth-child(2)::before {
-    content: "Étudiant";
-  }
-  
-  .table-responsive-lg td:nth-child(3)::before {
-    content: "Moyenne";
-  }
+[lang="ar"] .table th {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.85rem;
 }
