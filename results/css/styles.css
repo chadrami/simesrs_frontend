@@ -153,3 +153,20 @@ body {
   margin-left: -0.5rem;
   margin-top: -0.5rem;
 }
+
+#back-button:focus {
+  box-shadow: 0 0 0 0.25rem rgba(206, 212, 218, 0.5);
+}
+
+#back-button:active {
+  background-color: var(--bs-gray-200) !important;
+  transform: translateX(-2px) scale(0.98);
+}
+
+/* Supprimez la rotation pour l'arabe car l'icône maison n'a pas de direction */
+[lang="ar"] #back-button i {
+  margin-right: 0;
+  margin-left: 0.25rem;
+  /* On retire la rotation qui n'est plus nécessaire */
+  transform: none !important;
+}

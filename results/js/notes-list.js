@@ -45,6 +45,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     const etudiants = generateMockStudents();
     displayStudents(etudiants);
     
+    // Gestion du bouton de retour
+    document.getElementById('back-button').addEventListener('click', () => {
+      // Option 1: Simple redirection
+      window.location.href = ROUTES.HOME;
+      
+      // Option 2: Avec gestion d'historique
+      // window.history.replaceState(null, '', ROUTES.HOME);
+      // window.location.reload();
+    });
+    
   } catch (err) {
     showAlert(document.querySelector('.card-body'), 'danger', MESSAGES.errorLoadingData);
   }
@@ -89,7 +99,6 @@ function generateMockStudents() {
     { prenom: "El Hacen", nom: "Mohamed El Moustapha", moyenne: 11.20 },
     { prenom: "Khadijetou", nom: "Sidi Ahmed", moyenne: 10.85 },
     { prenom: "Moussa", nom: "Alioune Sarr", moyenne: 10.50 }
-    // ... autres étudiants mockés
   ];
 
   return etudiants

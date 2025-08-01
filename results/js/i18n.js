@@ -26,7 +26,8 @@ export const translations = {
     loading: "Chargement...",
     noResults: "Aucun résultat trouvé",
     errorLoadingData: "Une erreur est survenue lors du chargement des données",
-    pleaseWait: "Veuillez patienter..."
+    pleaseWait: "Veuillez patienter...",
+    backButton: "Retour à l'accueil",
   },
   ar: {
     title: "استشارة النتائج - وزارة التعليم العالي",
@@ -54,7 +55,8 @@ export const translations = {
     loading: "جاري التحميل...",
     noResults: "لا توجد نتائج",
     errorLoadingData: "حدث خطأ أثناء تحميل البيانات",
-    pleaseWait: "يرجى الانتظار..."
+    pleaseWait: "يرجى الانتظار...",
+    backButton: "العودة إلى الصفحة الرئيسية",
   }
 };
 
@@ -121,5 +123,12 @@ export function applyTranslations(lang) {
   if (languageSwitcher) {
     const span = languageSwitcher.querySelector('span');
     if (span) span.textContent = lang === 'fr' ? translation.arabicBtn : translation.frenchBtn;
+  }
+  
+  // Bouton de retour
+  const backButton = document.getElementById('back-button');
+  if (backButton) {
+    const backText = backButton.querySelector('.back-text');
+    if (backText) backText.textContent = translation.backButton;
   }
 }
