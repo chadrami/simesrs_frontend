@@ -28,6 +28,10 @@ export const translations = {
     errorLoadingData: "Une erreur est survenue lors du chargement des données",
     pleaseWait: "Veuillez patienter...",
     backButton: "Retour à l'accueil",
+    matricule: "Matricule",
+    searchPlaceholder: "Rechercher par nom ou matricule...",
+    searchReset: "Réinitialiser",
+    noResultsFound: "Aucun résultat trouvé pour votre recherche"
   },
   ar: {
     title: "استشارة النتائج - وزارة التعليم العالي",
@@ -57,6 +61,10 @@ export const translations = {
     errorLoadingData: "حدث خطأ أثناء تحميل البيانات",
     pleaseWait: "يرجى الانتظار...",
     backButton: "العودة إلى الصفحة الرئيسية",
+    matricule: "رقم التسجيل",
+    searchPlaceholder: "ابحث بالاسم أو رقم التسجيل...",
+    searchReset: "إعادة تعيين",
+    noResultsFound: "لم يتم العثور على نتائج للبحث"
   }
 };
 
@@ -131,4 +139,20 @@ export function applyTranslations(lang) {
     const backText = backButton.querySelector('.back-text');
     if (backText) backText.textContent = translation.backButton;
   }
+
+
+  // Ajouter cette partie pour le label matricule
+  const matriculeHeaders = document.querySelectorAll('th:nth-child(2)');
+  matriculeHeaders.forEach(header => {
+    header.textContent = translations[lang].matricule;
+  });
+
+  // Mettre à jour le placeholder de recherche
+  const searchInput = document.getElementById('search-input');
+  const resetButton = document.getElementById('reset-search');
+  if (searchInput && resetButton) {
+    searchInput.placeholder = translation.searchPlaceholder;
+    resetButton.title = translation.searchReset;
+  }
+
 }

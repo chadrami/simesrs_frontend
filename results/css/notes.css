@@ -27,3 +27,82 @@
   letter-spacing: 0;
   font-size: 0.85rem;
 }
+
+/* Ajoutez ces règles */
+.table td, .table th {
+  vertical-align: middle;
+}
+
+.table td:nth-child(2) { /* Style pour la colonne matricule */
+  font-family: monospace;
+  color: #6c757d;
+}
+
+/* Rendre le tableau plus compact */
+.table {
+  font-size: 0.9rem;
+}
+
+/* Adaptation responsive */
+@media (max-width: 768px) {
+  .table td:nth-child(2) { /* Masquer le matricule sur mobile */
+    display: none;
+  }
+  .table th:nth-child(2) {
+    display: none;
+  }
+}
+
+
+/* Ajoutez ces règles */
+#search-input {
+  min-width: 250px;
+}
+
+@media (max-width: 768px) {
+  #search-input {
+    min-width: auto;
+  }
+}
+
+.search-highlight {
+  background-color: #fff3cd;
+  font-weight: bold;
+}
+
+/* Tooltip styles */
+.tooltip-inner {
+  max-width: 300px;
+  padding: 0.5rem;
+  text-align: left;
+  background-color: var(--dark);
+}
+
+.tooltip-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.tooltip-semester {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tooltip-semester span:first-child {
+  font-weight: 600;
+  margin-right: 1rem;
+}
+
+[lang="ar"] .tooltip-semester {
+  flex-direction: row-reverse;
+}
+
+/* Ajouter à notes.css */
+.popover {
+  max-width: 400px;
+}
+
+.popover-body {
+  padding: 1rem;
+}
