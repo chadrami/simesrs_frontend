@@ -1,12 +1,10 @@
-import { showAlert } from './utils.js';
+import { showAlert, clearSessionStorage } from './utils.js';
 import { API_CONFIG, ROUTES } from './config.js';
 import { getPreferredLanguage, translations } from './i18n.js';
 
-// Variables globales
 let allStudents = [];
 let currentLang = 'fr';
 
-// Fonction pour afficher le skeleton loader
 const showSkeleton = () => {
   const tbody = document.getElementById('etudiants-list');
   tbody.innerHTML = '';
@@ -23,7 +21,6 @@ const showSkeleton = () => {
   }
 };
 
-// Fonction pour récupérer le nom complet avec fallback
 const getStudentDisplayName = (student, lang) => {
   if (!student) return 'Nom inconnu';
   
@@ -41,7 +38,6 @@ const getStudentDisplayName = (student, lang) => {
   return 'Nom inconnu';
 };
 
-// Fonction pour surligner les termes de recherche
 const highlightSearchTerm = (text, term) => {
   if (!term || !text) return text;
   
@@ -53,7 +49,6 @@ const highlightSearchTerm = (text, term) => {
   }
 };
 
-// Fonction pour formater le tooltip des notes
 const formatNotesTooltip = (notes, lang) => {
   const semesters = Object.entries(notes)
     .sort(([s1], [s2]) => s1.localeCompare(s2))
@@ -67,14 +62,12 @@ const formatNotesTooltip = (notes, lang) => {
   return `<div class="tooltip-notes">${semesters}</div>`;
 };
 
-// Fonction pour afficher les étudiants (avec filtrage)
 function displayStudents(students, lang, searchTerm = '') {
   const tbody = document.getElementById('etudiants-list');
   const MESSAGES = translations[lang];
   
   tbody.innerHTML = '';
   
-  // Filtrer les étudiants si un terme de recherche est fourni
   const filteredStudents = searchTerm 
     ? students.filter(student => {
         const searchLower = searchTerm.toLowerCase();
@@ -96,7 +89,6 @@ function displayStudents(students, lang, searchTerm = '') {
     return;
   }
 
-  // Mettre à jour les en-têtes du tableau
   const headers = [
     { class: 'text-center', text: MESSAGES.rank },
     { class: 'matricule-header', text: MESSAGES.matricule },
@@ -109,7 +101,6 @@ function displayStudents(students, lang, searchTerm = '') {
     `<th class="${header.class || ''}">${header.text}</th>`
   ).join('');
 
-  // Afficher les étudiants filtrés
   filteredStudents.forEach(etudiant => {
     const tr = document.createElement('tr');
     tr.className = 'fade-in';
@@ -134,7 +125,6 @@ function displayStudents(students, lang, searchTerm = '') {
     tbody.appendChild(tr);
   });
 
-  // Activer les tooltips Bootstrap
   const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
   tooltipTriggerList.map(tooltipTriggerEl => {
     return new bootstrap.Tooltip(tooltipTriggerEl, {
@@ -144,39 +134,35 @@ function displayStudents(students, lang, searchTerm = '') {
   });
 }
 
-// Configuration de la recherche
 function setupSearch() {
   const searchInput = document.getElementById('search-input');
   const resetSearch = document.getElementById('reset-search');
   const lang = getPreferredLanguage();
   const MESSAGES = translations[lang];
 
-  // Mettre à jour le placeholder
   searchInput.placeholder = MESSAGES.searchPlaceholder;
   resetSearch.title = MESSAGES.searchReset;
 
-  // Gérer la recherche en temps réel
   searchInput.addEventListener('input', (e) => {
     displayStudents(allStudents, currentLang, e.target.value.trim());
   });
 
-  // Réinitialiser la recherche
   resetSearch.addEventListener('click', () => {
     searchInput.value = '';
     displayStudents(allStudents, currentLang);
   });
 }
 
-// Code principal
 document.addEventListener('DOMContentLoaded', async () => {
   currentLang = getPreferredLanguage();
   const MESSAGES = translations[currentLang];
   
-  // Afficher le message
   document.getElementById('dispute-notice-text').textContent = MESSAGES.disputeNotice;
-
-  // Afficher le skeleton avant le chargement
   showSkeleton();
+
+  window.addEventListener('beforeunload', () => {
+    clearSessionStorage();
+  });
 
   try {
     const storedData = sessionStorage.getItem('consultationData');
@@ -189,17 +175,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('etablissement-nom').textContent = etablissement;
     document.getElementById('formation-nom').textContent = formation;
     
-    // Construire l'URL selon la structure de votre API
     const currentYear = new Date().getFullYear();
     const apiUrl = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PROGRAM_RANKING}${formationCode}/${currentYear}/ranking/`;
     
-    // Récupérer les résultats des étudiants
     const response = await fetch(apiUrl);
-    
     if (!response.ok) throw new Error(MESSAGES.errorLoadingData);
     const data = await response.json();
     
-    // Stocker et préparer les données
     allStudents = data.results.map(student => ({
       matricule: student.matricule,
       fullName: getStudentDisplayName(student, currentLang),
@@ -208,14 +190,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       notes: student.notes
     })).sort((a, b) => a.rank - b.rank);
     
-    // Afficher initialement tous les étudiants
     displayStudents(allStudents, currentLang);
-    
-    // Configurer la recherche
     setupSearch();
     
-    // Gestion du bouton de retour
     document.getElementById('back-button').addEventListener('click', () => {
+      clearSessionStorage();
       window.location.href = ROUTES.HOME;
     });
     

@@ -75,3 +75,8 @@ export function formatDate(dateString, lang = 'fr') {
   
   return date.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'ar-MA', options);
 }
+
+
+export const clearSessionStorage = () => {
+  sessionStorage.removeItem('consultationData');
+};
